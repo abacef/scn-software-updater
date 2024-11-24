@@ -1,0 +1,8 @@
+- name: update the public reverse proxy container and OS packages
+  hosts: rprox
+  tasks:
+    - name: update apk package versions on the host OS available to be updated
+      shell: "/sbin/apk update"
+
+    - name: upgrade the packages on the host OS
+      shell: "/sbin/apk upgrade --available"
