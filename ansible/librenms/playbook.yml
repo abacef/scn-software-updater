@@ -1,0 +1,30 @@
+- name: update librenms
+  hosts: librenms
+  vars:
+    db_container: "librenms_db"
+    alpine_containers:
+      - librenms_redis
+      - librenms
+      - librenms_dispatcher
+  tasks:
+    - name: update apk package versions on the host OS available to be updated
+      shell: "/sbin/apk update"
+
+    - name: upgrade the packages on the host OS
+      shell: "/sbin/apk upgrade --available"
+
+    - name: update mariadb container Ubuntu OS package versions available to be updated
+      community.docker.docker_container_exec:
+        container: "{{ db_container }}"
+        command: "apt update"
+
+    - name: upgrade the ubuntu packages in the mariadb container's OS
+      community.docker.docker_container_exec:
+        container: "{{ db_container }}"
+        command: "apt upgrade"
+
+    - name: update and upgrade the alpine images
+      community.docker.docker_container_exec:
+        container: "{{ item }}"
+        command: "/sbin/apk update && /sbin/apk upgrade"
+      loop: "{{ alpine_containers }}"

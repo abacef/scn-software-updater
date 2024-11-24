@@ -1,0 +1,1 @@
+(/sbin/apk update && /sbin/apk upgrade --available) >> /var/log/upd/update_self.log 2>&1
